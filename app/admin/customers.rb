@@ -1,3 +1,4 @@
+# app/admin/customers.rb
 ActiveAdmin.register Customer do
 
   # See permitted parameters documentation:
