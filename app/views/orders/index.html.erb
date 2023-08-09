@@ -2,6 +2,7 @@
   <div class="alert alert-warning">No orders found</div>
 <% else %>
   <% @orders.each do |order| %>
+
     <div class="card mb-4">
       <div class="card-header">
         <h2>Order <%= order.id %></h2>
