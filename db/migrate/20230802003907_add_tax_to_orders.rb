@@ -1,0 +1,7 @@
+class AddTaxToOrders < ActiveRecord::Migration[7.0]
+  def change
+    add_column :orders, :gst, :decimal
+    add_column :orders, :pst, :decimal
+    add_column :orders, :hst, :decimal
+  end
+end
