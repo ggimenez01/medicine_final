@@ -1,4 +1,5 @@
 # app/admin/products.rb
+
 ActiveAdmin.register Product do
   permit_params :name, :description, :price, :category_id, :supplier_id, :mat_id, :uom, :image, :on_sale
 
