@@ -1,3 +1,4 @@
+# app/admin/suppliers.rb
 ActiveAdmin.register Supplier do
   permit_params :name, :address, :phone_number
   # See permitted parameters documentation:
