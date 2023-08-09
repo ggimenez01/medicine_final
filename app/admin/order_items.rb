@@ -1,5 +1,4 @@
 # app/admin/order_items.rb
-
 ActiveAdmin.register OrderItem do
   # Permit the attributes you want to be editable in Active Admin
   permit_params :order_id, :product_id, :quantity, :price
