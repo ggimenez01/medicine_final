@@ -1,3 +1,4 @@
+# app/admin/users.rb
 ActiveAdmin.register User do
   permit_params :name, :address, :province_id, :email, :password, :password_confirmation
 
