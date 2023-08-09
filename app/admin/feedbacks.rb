@@ -1,3 +1,4 @@
+# app/admin/feedback.rb
 ActiveAdmin.register Feedback do
 
     permit_params :name, :email, :content
