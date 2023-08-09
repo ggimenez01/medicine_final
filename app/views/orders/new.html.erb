@@ -1,0 +1,104 @@
+<style>
+  /* ... (previously defined styles) ... */
+
+  .order-review-container {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .order-review-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .order-review-table th,
+  .order-review-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .order-review-table h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .order-review-table img {
+    max-width: 100px;
+    max-height: 100px;
+  }
+</style>
+
+<div class="container mt-4 order-review-container">
+  <h1>Order Review</h1>
+
+  <div class="customer-details">
+    <h3>Customer Details</h3>
+    <p><strong>Name:</strong> <%= @order.customer.name %></p>
+    <p><strong>Email:</strong> <%= @order.customer.email %></p>
+    <p><strong>Address:</strong> <%= @order.customer.address %></p>
+    <% if @order.customer.province.present? %>
+      <p><strong>Province:</strong> <%= @order.customer.province.name %></p>
+    <% else %>
+      <p><strong>Province:</strong> Not selected</p>
+    <% end %>
+  
+  </div>
+
+  <div class="order-details">
+    <h3>Order Details</h3>
+    <div class="order-review-table">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% subtotal = 0 %>
+          <% @order.order_items.each do |item| %>
+            <% product = item.product %>
+            <% product_subtotal = item.product.price * item.quantity %>
+            <% subtotal += product_subtotal %>
+            <tr>
+              <td>
+                <% if product.image.present? %>
+                  <%= image_tag product.image.url, class: "img-thumbnail" %>
+                <% else %>
+                  <p>Image Not Available</p>
+                <% end %>
+              </td>
+              <td><%= product.name %></td>
+              <td><%= number_to_currency(product.price) %></td>
+              <td><%= item.quantity %></td>
+              <td><%= number_to_currency(product_subtotal) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="invoice">
+    <h3>Invoice</h3>
+    <% tax_rates = TaxRate.find_by(province_id: @order.customer.province_id) %>
+    <% gst = subtotal * (tax_rates&.gst_rate || 0) %>
+    <% pst = subtotal * (tax_rates&.pst_rate || 0) %>
+    <% hst = subtotal * (tax_rates&.hst_rate || 0) %>
+    <p><strong>Subtotal:</strong> <%= number_to_currency(subtotal) %></p>
+    <p><strong>GST:</strong> <%= number_to_currency(gst) %></p>
+    <p><strong>PST:</strong> <%= number_to_currency(pst) %></p>
+    <p><strong>HST:</strong> <%= number_to_currency(hst) %></p>
+    <p><strong>Grand Total:</strong> <%= number_to_currency(subtotal + gst + pst + hst) %></p>
+  </div>
+
+  <div class="order-status">
+    <h3>Order Status</h3>
+    <p><%= @order.status %></p>
+  </div>
+</div>

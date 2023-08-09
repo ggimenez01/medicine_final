@@ -1,0 +1,8 @@
+/* app/assets/stylesheets/custom.css */
+
+/* Customize the size of the thumbnail */
+.img-thumbnail {
+    max-width: 100px; /* Adjust this value to your desired width */
+    max-height: 100px; /* Adjust this value to your desired height */
+  }
+  

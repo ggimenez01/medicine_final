@@ -1,0 +1,41 @@
+<% if @orders.empty? %>
+  <div class="alert alert-warning">No orders found</div>
+<% else %>
+  <% @orders.each do |order| %>
+    <div class="card mb-4">
+      <div class="card-header">
+        <h2>Order <%= order.id %></h2>
+      </div>
+      <div class="card-body">
+        <h3>Items:</h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% order.order_items.each do |item| %>
+              <tr>
+                <td><%= image_tag(item.product.image_url, alt: item.product.name, width: 50) %></td>
+                <td><%= item.product.name %></td>
+                <td><%= item.quantity %></td>
+                <td><%= number_to_currency(item.price) %></td>
+                <td><%= number_to_currency(item.price * item.quantity) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <p>Subtotal: <%= number_to_currency(order.subtotal) %></p>
+        <p>GST: <%= number_to_currency(order.gst) %></p>
+        <p>PST: <%= number_to_currency(order.pst) %></p>
+        <p>HST: <%= number_to_currency(order.hst) %></p>
+        <p>Total: <%= number_to_currency(order.total) %></p>
+      </div>
+    </div>
+  <% end %>
+<% end %>

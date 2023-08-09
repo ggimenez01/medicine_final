@@ -1,0 +1,109 @@
+<style>
+  /* ... (previously defined styles) ... */
+
+  .order-review-container {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .order-review-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .order-review-table th,
+  .order-review-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .order-review-table h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .order-review-table img {
+    max-width: 100px;
+    max-height: 100px;
+  }
+</style>
+
+<div class="container mt-4 order-review-container">
+  <% if session[:cart] && session[:cart].any? %>
+    <h2>Your Order:</h2>
+    <div class="order-review-table">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% session[:cart].each do |id, quantity| %>
+            <% product = Product.find(id) %>
+            <tr>
+              <td>
+                <% if product.image.present? %>
+                  <%= image_tag product.image.url, class: "img-thumbnail" %>
+                <% else %>
+                  <p>Image Not Available</p>
+                <% end %>
+              </td>
+              <td><%= product.name %></td>
+              <td><%= quantity %></td>
+              <td><%= number_to_currency(product.price) %></td>
+              <td><%= number_to_currency(product.price * quantity) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+  
+  <h3>Fill this with your information:</h3>
+
+  <%= form_with(model: @order, local: true) do |form| %>
+  
+  <% if @order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+      <ul>
+      <% @order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.fields_for :customer do |customer_form| %>
+    <div class="form-group">
+      <%= customer_form.label :name %>
+      <%= customer_form.text_field :name, value: user_signed_in? ? current_user.name : '', class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= customer_form.label :email %>
+      <%= customer_form.email_field :email, value: user_signed_in? ? current_user.email : '', class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= customer_form.label :address %>
+      <%= customer_form.text_field :address, value: user_signed_in? ? current_user.address : '', class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= customer_form.label :province %>
+      <%= customer_form.collection_select :province_id, Province.all, :id, :name, { selected: user_signed_in? ? current_user.province_id : nil, prompt: "Select a province" }, class: "form-control" %>
+    </div>
+  <% end %>
+
+  <%= form.submit 'Save Details and Proceed to Review', class: 'btn btn-primary' %>
+
+<% end %>
+</div>

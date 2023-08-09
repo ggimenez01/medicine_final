@@ -1,0 +1,11 @@
+<% if @breadcrumbs %>
+  <nav class="breadcrumbs">
+    <% @breadcrumbs.each_with_index do |breadcrumb, index| %>
+      <% if breadcrumb[:url].present? && index < @breadcrumbs.length - 1 %>
+        <%= link_to breadcrumb[:name], breadcrumb[:url] %> &gt;
+      <% else %>
+        <%= breadcrumb[:name] %>
+      <% end %>
+    <% end %>
+  </nav>
+<% end %>

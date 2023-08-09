@@ -1,0 +1,70 @@
+<%= render 'shared/breadcrumbs' %>
+
+<div class="container mt-4">
+  <h1>Categories</h1>
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <%= link_to "OTC", otc_categories_path, class: "nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Prescription", prescription_categories_path, class: "nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Branded", branded_categories_path, class: "nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Generic", generic_categories_path, class: "nav-link" %>
+    </li>
+  </ul>
+
+  <h2>Products</h2>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr>
+          <td>
+            <% if product.image.present? %>
+              <%= image_tag product.image.url, alt: product.name, class: "img-thumbnail" %>
+            <% else %>
+              <p>Image Not Available</p>
+            <% end %>
+          </td>
+          <td><%= link_to product.name, product_path(product) %></td>
+          <td><%= number_to_currency(product.price) %></td>
+          <td><%= product.category.name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <% if @products.total_pages > 1 %>
+        <% min_page = [@products.current_page - 4, 1].max %>
+        <% max_page = [min_page + 9, @products.total_pages].min %>
+        <% (min_page..max_page).each do |page| %>
+          <% if @products.current_page == page %>
+            <li class="page-item active">
+              <span class="page-link"><%= page %><span class="sr-only">(current)</span></span>
+            </li>
+          <% else %>
+            <li class="page-item">
+              <%= link_to page, { page: page }, class: 'page-link' %>
+            </li>
+          <% end %>
+        <% end %>
+      <% end %>
+    </ul>
+  </nav>
+</div>

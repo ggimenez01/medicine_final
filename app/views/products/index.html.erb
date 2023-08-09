@@ -1,0 +1,161 @@
+<div class="container mt-4">
+  <!-- Filter buttons -->
+  <div class="row justify-content-center mb-3">
+    <div class="col-md-8 text-center">
+      <div class="btn-group" role="group">
+        <%= link_to "Show On Sale", { on_sale: true }, class: "btn btn-info mr-2" %>
+        <%= link_to "Show New Products", { new: true }, class: "btn btn-info mr-2" %>
+        <%= link_to "Show Recently Updated", { recently_updated: true }, class: "btn btn-info" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search form -->
+  <div class="row justify-content-center mb-3">
+    <div class="col-md-8">
+      <%= form_tag products_path, method: :get, class: "form-inline input-group justify-content-center" do %>
+        <div class="form-group mr-2">
+          <%= label_tag "Keyword:" %>
+          <%= text_field_tag "search", params[:search], class: "form-control", placeholder: "Search by keyword..." %>
+        </div>
+        
+        <div class="form-group mr-2">
+          <%= label_tag "Category:" %>
+          <%= select_tag "category", options_for_select(Category.pluck(:name, :id), params[:category]), include_blank: "All Categories", class: "form-control" %>
+        </div>
+        
+        <%= submit_tag "Search", class: "btn btn-primary mr-2" %>
+      
+        <%= link_to "Clear", products_path, class: "btn btn-secondary" %>
+      
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= render 'shared/breadcrumbs' %>
+
+<h1>Products</h1>
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th class="col-md-2">Image</th>
+          <th class="col-md-3">Name</th>
+          <th class="col-md-2">Price</th>
+          <th class="col-md-2">Category</th>
+          <th class="col-md-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @products.each do |product| %>
+          <tr>
+            <td class="col-md-2">
+              <% if product.image.present? %>
+                <%= image_tag product.image.url, class: "img-thumbnail" %>
+              <% else %>
+                <p>Image Not Available</p>
+              <% end %>
+            </td>
+            <td class="col-md-3"><%= link_to product.name, product_path(product) %></td>
+            <td class="col-md-2"><%= number_to_currency(product.price) %></td>
+            <td class="col-md-2"><%= product.category.name %></td>
+            <td class="col-md-3"><%= button_to 'Add to cart', add_cart_path(id: product.id), method: :post, class: "btn btn-primary btn-sm" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<button id="feedback-button" style="position: fixed; right: 20px; bottom: 20px;">Send us a feedback</button>
+
+<div class="col-md-12">
+  <!-- Bootstrap pagination -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <% if @products.current_page > 1 %>
+        <li class="page-item">
+          <%= link_to 'First', { page: 1, search: params[:search], category: params[:category] }, class: 'page-link' %>
+        </li>
+        <li class="page-item">
+          <%= link_to 'Previous', { page: @products.current_page - 1, search: params[:search], category: params[:category] }, class: 'page-link' %>
+        </li>
+      <% end %>
+
+      <% paginate @products, window: 10 do |page| %>
+        <% if @products.current_page == page %>
+          <li class="page-item active">
+            <span class="page-link"><%= page %><span class="sr-only">(current)</span></span>
+          </li>
+        <% else %>
+          <li class="page-item">
+            <%= link_to page, { page: page, search: params[:search], category: params[:category] }, class: 'page-link' %>
+          </li>
+        <% end %>
+      <% end %>
+
+      <% if @products.current_page < @products.total_pages %>
+        <li class="page-item">
+          <%= link_to 'Next', { page: @products.current_page + 1, search: params[:search], category: params[:category] }, class: 'page-link' %>
+        </li>
+        <li class="page-item">
+          <%= link_to 'Last', { page: @products.total_pages, search: params[:search], category: params[:category] }, class: 'page-link' %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+</div>
+
+<!-- Feedback button -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#feedbackModal" style="position: fixed; bottom: 20px; right: 20px; z-index: 100;">
+  Send us a feedback
+</button>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="feedbackModalLabel">We value your feedback</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <%= form_with(model: Feedback.new, local: true) do |form| %>
+        <div class="modal-body">
+          <div class="form-group">
+            <%= form.label :name %>
+            <%= form.text_field :name, required: true, class: 'form-control', placeholder: 'Your name...' %>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :email %>
+            <%= form.email_field :email, required: true, class: 'form-control', placeholder: 'Your email...' %>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :content, 'Your feedback' %>
+            <%= form.text_area :content, required: true, class: 'form-control', placeholder: 'Your feedback...', rows: 5 %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <%= form.submit 'Submit', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+

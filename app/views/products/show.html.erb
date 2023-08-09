@@ -1,0 +1,26 @@
+<%= render 'shared/breadcrumbs' %>
+
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <h1><%= @product.name %></h1>
+     <% if @product.image.present? %>
+    <%= image_tag @product.image.url, alt: @product.name, class: "img-thumbnail" %>
+<% else %>
+    <p class="text-muted">Image Not Available</p>
+<% end %>
+
+      <p><%= link_to "Back to Home", root_path, class: "btn btn-secondary mt-3" %></p>
+     <p><%= link_to 'Back to Categories', categories_path, class: 'btn btn-secondary mt-3' %></p>
+    </div>
+    <div class="col-md-6">
+      <p><strong>Price:</strong> <%= number_to_currency(@product.price) %></p>
+      <p><strong>UOM:</strong> <%= @product.uom %></p>
+      <p><strong>Supplier:</strong> <%= @product.supplier.name %></p>
+      <p><strong>Category:</strong> <%= @product.category.name %></p>
+      <p><strong>Created At:</strong> <%= @product.created_at %></p>
+      <p><strong>Updated At:</strong> <%= @product.updated_at %></p>
+    </div>
+  </div>
+</div>

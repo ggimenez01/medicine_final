@@ -1,0 +1,31 @@
+/* app/assets/stylesheets/application.scss */
+@import 'bootstrap';
+
+/* Add custom styles for the pagination */
+nav.pagination {
+  ul.pagination {
+    li.page-item {
+      &.active {
+        span.page-link {
+          background-color: #007bff; /* Change to the color you want for the active page */
+          border-color: #007bff;
+        }
+      }
+
+      a.page-link {
+        &:hover {
+          background-color: #007bff; /* Change to the color you want for the hover state */
+          border-color: #007bff;
+        }
+      }
+    }
+  }
+}
+
+
+/* Styles for the logo image */
+.logo-img {
+    width: 150px; /* Set the desired width for the logo */
+    height: 150px; /* Set the desired height for the logo */
+  }
+  

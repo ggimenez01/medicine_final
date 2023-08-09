@@ -1,0 +1,12 @@
+<%= render 'shared/breadcrumbs' %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Branded Products</h1>
+       <%= link_to 'Back to Categories', categories_path, class: 'btn btn-secondary mt-3' %>
+      <%= render 'products_table', products: @products %>
+     
+    </div>
+  </div>
+</div>

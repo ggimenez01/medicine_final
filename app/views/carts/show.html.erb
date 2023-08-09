@@ -1,0 +1,71 @@
+<style>
+  /* ... (previously defined styles) ... */
+
+  /* Additional styles for the product images */
+  .product-image {
+    max-width: 80px;
+    max-height: 80px;
+  }
+</style>
+
+<div class="container mt-4">
+  <h1>Your Cart</h1>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Subtotal</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if session[:cart] && session[:cart].any? %>
+        <% total_cost = 0 %>
+        <% session[:cart].each do |id, quantity| %>
+          <% product = Product.find(id) %>
+          <% total_cost += product.price * quantity %>
+          <tr>
+            <td>
+              <% if product.image.present? %>
+                <%= image_tag product.image.url, class: "img-thumbnail product-image" %>
+              <% else %>
+                <p>Image Not Available</p>
+              <% end %>
+            </td>
+            <td><%= product.name %></td>
+            <td><%= number_to_currency(product.price) %></td>
+            <td>
+              <div class="input-group">
+                <%= button_to '+', increase_cart_path(id: id), method: :post, class: 'btn btn-sm btn-outline-primary input-group-prepend' %>
+                <span class="input-group-text"><%= quantity %></span>
+                <%= button_to '-', decrease_cart_path(id: id), method: :post, class: 'btn btn-sm btn-outline-primary input-group-append' %>
+              </div>
+            </td>
+            <td><%= number_to_currency(product.price * quantity) %></td>
+            <td>
+              <%= button_to 'Remove', remove_cart_path(id: id), method: :post, class: 'btn btn-sm btn-outline-danger' %>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <td colspan="4">Total:</td>
+          <td><%= number_to_currency(total_cost) %></td>
+          <td></td>
+        </tr>
+      <% else %>
+        <tr>
+          <td colspan="6">Your cart is empty</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  
+  <%= link_to 'Continue Shopping', products_path, class: 'btn btn-primary mt-3' %>
+  <% if session[:cart] && session[:cart].any? %>
+    <%= link_to 'Proceed to Checkout', new_customer_path, class: 'btn btn-primary mt-3' %>
+  <% end %>
+</div>

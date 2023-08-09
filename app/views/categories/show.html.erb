@@ -1,0 +1,53 @@
+<%= render 'shared/breadcrumbs' %>
+
+<div class="container">
+  <h1><%= @category.name %> Products</h1>
+  <%= link_to "Back to Categories", categories_path %>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr>
+          <td><%= @category.name %></td>
+          <td>
+            <% if product.image.present? %>
+              <%= image_tag product.image.url, alt: product.name, class: "img-thumbnail" %>
+            <% else %>
+              <p>Image Not Available</p>
+            <% end %>
+          </td>
+          <td><%= link_to product.name, product_path(product) %></td>
+          <td><%= number_to_currency(product.price) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <% if @products.total_pages > 1 %>
+        <% min_page = [@products.current_page - 4, 1].max %>
+        <% max_page = [min_page + 9, @products.total_pages].min %>
+        <% (min_page..max_page).each do |page| %>
+          <% if @products.current_page == page %>
+            <li class="page-item active">
+              <span class="page-link"><%= page %><span class="sr-only">(current)</span></span>
+            </li>
+          <% else %>
+            <li class="page-item">
+              <%= link_to page, { page: page }, class: 'page-link' %>
+            </li>
+          <% end %>
+        <% end %>
+      <% end %>
+    </ul>
+  </nav>
+</div>

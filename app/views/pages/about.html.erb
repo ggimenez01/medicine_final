@@ -1,0 +1,8 @@
+<div class="container">
+  <h1>About Us</h1>
+  <h2><%= @about.title %></h2>
+
+  <% @about.content.split("\n").each do |paragraph| %>
+    <p><%= paragraph %></p>
+  <% end %>
+</div>
