@@ -1,5 +1,4 @@
 # app/admin/order.rb
-
 ActiveAdmin.register Order do
   # Permit the attributes you want to be editable in Active Admin
   permit_params :customer_id, :total, :status, :gst, :pst, :hst, :subtotal
